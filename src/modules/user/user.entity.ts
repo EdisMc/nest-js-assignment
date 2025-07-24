@@ -1,14 +1,15 @@
-import { Column, Entity } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
 
 import { BaseEntity } from '../../shared/entities/base.entity';
 import { UserRole } from '../../shared/enums/user-role.enum';
+import { Company } from '../company/company.entity';
 
 @Entity({ name: 'users' })
-export class UserEntity extends BaseEntity {
+export class User extends BaseEntity {
   @Column({ name: 'company_id', type: 'uuid' })
   companyId: string;
 
-  @Column({ type: 'varchar', length: 100 })
+  @Column({ type: 'varchar', length: 255 })
   name: string;
 
   @Column({ type: 'varchar', length: 255, unique: true })
@@ -19,4 +20,12 @@ export class UserEntity extends BaseEntity {
 
   @Column({ type: 'enum', enum: UserRole, default: UserRole.VIEWER })
   role: UserRole;
+
+  @ManyToOne(() => Company, (company) => company.users)
+  @JoinColumn({ name: 'company_id' })
+  company: Company;
+
+  @ManyToOne(() => User, { nullable: true })
+  @JoinColumn({ name: 'modified_by' })
+  modifiedBy?: User;
 }
