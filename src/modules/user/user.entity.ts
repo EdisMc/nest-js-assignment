@@ -4,7 +4,7 @@ import { BaseEntity } from '../../shared/entities/base.entity';
 import { UserRole } from '../../shared/enums/user-role.enum';
 import { Company } from '../company/company.entity';
 
-@Entity({ name: 'users' })
+@Entity({ name: 'user' })
 export class User extends BaseEntity {
   @Column({ name: 'company_id', type: 'uuid' })
   companyId: string;

@@ -9,8 +9,4 @@ export class AppService {
     @InjectDataSource()
     private dataSource: DataSource,
   ) {}
-
-  getHello(): string {
-    return 'Hello World!';
-  }
 }
