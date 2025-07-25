@@ -49,6 +49,7 @@ export class ReportsService {
     FROM "order" o
     INNER JOIN partner ON partner.id = o.partner_id
     WHERE o.company_id = $1
+      AND o.type = 'delivery'
     GROUP BY partner.id, partner.name
     ORDER BY COUNT(o.id) DESC
     LIMIT 1
@@ -57,7 +58,6 @@ export class ReportsService {
     );
     return raw[0] || null;
   }
-
   async getHighestStockProductPerWarehouse(companyId: string) {
     const raw = await this.orderItemRepo.query(
       `
