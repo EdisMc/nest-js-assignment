@@ -1,42 +1,33 @@
-import {
-	Body,
-	Controller,
-	Delete,
-	Get,
-	Param,
-	Patch,
-	Post,
-} from '@nestjs/common';
+import { BaseController } from 'src/shared/controller/base.controller';
+
+import { Body, Controller, Param, Post, Put } from '@nestjs/common';
+import { ApiBearerAuth, ApiBody, ApiTags } from '@nestjs/swagger';
 
 import { Company } from './company.entity';
+import { CreateCompanyDto, UpdateCompanyDto } from './company.schema';
 import { CompanyService } from './company.service';
 
+@ApiTags('Companies')
+@ApiBearerAuth('Authorization')
 @Controller('companies')
-export class CompanyController {
-  constructor(private readonly companyService: CompanyService) {}
+export class CompanyController extends BaseController<
+  Company,
+  CreateCompanyDto,
+  UpdateCompanyDto
+> {
+  constructor(protected readonly companyService: CompanyService) {
+    super(companyService);
+  }
 
   @Post()
-  create(@Body() data: Partial<Company>) {
-    return this.companyService.create(data);
+  @ApiBody({ type: CreateCompanyDto })
+  override create(@Body() dto: CreateCompanyDto) {
+    return super.create(dto);
   }
 
-  @Get()
-  findAll() {
-    return this.companyService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.companyService.findOne(id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() data: Partial<Company>) {
-    return this.companyService.update(id, data);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.companyService.remove(id);
+  @Put(':id')
+  @ApiBody({ type: UpdateCompanyDto })
+  override update(@Param('id') id: string, @Body() dto: UpdateCompanyDto) {
+    return super.update(id, dto);
   }
 }

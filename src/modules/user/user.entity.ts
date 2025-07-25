@@ -1,6 +1,6 @@
 import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
 
-import { BaseEntity } from '../../shared/entities/base.entity';
+import { BaseEntity } from '../../shared/entity/base.entity';
 import { UserRole } from '../../shared/enums/user-role.enum';
 import { Company } from '../company/company.entity';
 

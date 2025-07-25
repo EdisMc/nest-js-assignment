@@ -7,7 +7,7 @@ import {
 	OneToOne,
 } from 'typeorm';
 
-import { BaseEntity } from '../../shared/entities/base.entity';
+import { BaseEntity } from '../../shared/entity/base.entity';
 import { OrderType } from '../../shared/enums/order-type.enum';
 import { Company } from '../company/company.entity';
 import { Invoice } from '../invoice/invoice.entity';
@@ -30,7 +30,7 @@ export class Order extends BaseEntity {
   @Column({ type: 'timestamptz', default: () => 'now()' })
   date: Date;
 
-  @Column({ name: 'order_type', type: 'enum', enum: OrderType })
+  @Column({ name: 'type', type: 'enum', enum: OrderType })
   type: OrderType;
 
   @ManyToOne(() => Company, (company) => company.orders)

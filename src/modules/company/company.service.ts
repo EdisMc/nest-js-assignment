@@ -1,41 +1,32 @@
+import { BaseService } from 'src/shared/service/base.service';
 import { Repository } from 'typeorm';
 
-import { Injectable } from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { Company } from './company.entity';
+import { CreateCompanyDto, UpdateCompanyDto } from './company.schema';
 
 @Injectable()
-export class CompanyService {
-  constructor(
-    @InjectRepository(Company)
-    private readonly companyRepository: Repository<Company>,
-  ) {}
-
-  create(data: Partial<Company>) {
-    const company = this.companyRepository.create(data);
-    return this.companyRepository.save(company);
+export class CompanyService extends BaseService<Company> {
+  constructor(@InjectRepository(Company) repo: Repository<Company>) {
+    super(repo, 'Company');
   }
 
-  async findAll() {
-    try {
-      return await this.companyRepository.find();
-    } catch (error) {
-      console.error('Error in findAll:', error);
-      throw error;
+  async create(dto: CreateCompanyDto): Promise<Company> {
+    const existing = await this.repo.findOne({ where: { name: dto.name } });
+    if (existing)
+      throw new ConflictException(`Company with name '${dto.name}' exists!`);
+    return super.create(dto);
+  }
+
+  async update(id: string, dto: UpdateCompanyDto): Promise<Company> {
+    const company = await this.getById(id);
+    if (dto.name && dto.name !== company.name) {
+      const existing = await this.repo.findOne({ where: { name: dto.name } });
+      if (existing)
+        throw new ConflictException(`Company with name '${dto.name}' exists!`);
     }
-  }
-
-  findOne(id: string) {
-    return this.companyRepository.findOne({ where: { id } });
-  }
-
-  async update(id: string, data: Partial<Company>) {
-    await this.companyRepository.update(id, data);
-    return this.findOne(id);
-  }
-
-  remove(id: string) {
-    return this.companyRepository.delete(id);
+    return super.update(id, dto);
   }
 }

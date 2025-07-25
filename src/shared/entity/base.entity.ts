@@ -20,5 +20,5 @@ export abstract class BaseEntity {
   deletedAt?: Date;
 
   @Column({ name: 'modified_by', type: 'uuid', nullable: true })
-  modifiedByUserId?: string;
+  modifiedById?: string;
 }
